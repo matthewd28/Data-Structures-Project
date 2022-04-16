@@ -1,28 +1,25 @@
 #pragma once
+#include "Degree.h"
 #include <iostream>
+#include <vector>
 using namespace std;
 
-struct Node {
-	string institution, city, state, website;
-	float admissionRate, actAverage, satAverage, whitePercent, blackPercent, hispanicPercent, asianPercent;
-	int numUndergraduates, costAttendance, tuition;
+struct College {
 
-	//ACT average based upon multiple columns of data
+	string institution, city, state;
+	float admissionRate, satAverage;
+	int numUndergraduates, costAttendance;
 
-	Node(string institution_, string city_, string state_, string website_, float admissionRate_, float actAverage_, float satAverage_, float whitePercent_, float blackPercent_, float hispanicPercent_, float asianPercent_, int numUndergraduates_, int costAttendance_, int tuition_) {
+	vector<Degree> degrees;
+
+
+	College(string institution_, string city_, string state_, float admissionRate_, float satAverage_, int numUndergraduates_, int costAttendance_) {
 		institution = institution_;
 		city = city_;
 		state = state_;
-		website = website_;
 		admissionRate = admissionRate_;
-		actAverage = actAverage_;
 		satAverage = satAverage_;
-		whitePercent = whitePercent_;
-		blackPercent = blackPercent_;
-		hispanicPercent = hispanicPercent_;
-		asianPercent = asianPercent_;
 		numUndergraduates = numUndergraduates_;
 		costAttendance = costAttendance_;
-		tuition = tuition_;
 	}
 };
