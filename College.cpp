@@ -21,6 +21,8 @@ struct Node {
 		numUndergraduates = numUndergraduates_;
 		costAttendance = costAttendance_;
 		tuition = tuition_;
+		
+		//ACT average is based upon multiple columns, as the data wasn't directly provided.
 	}
 	
 
