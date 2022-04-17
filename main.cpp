@@ -14,8 +14,14 @@ int main() {
 	//So basically we're going to have "relevancy points," where each criteria that is met by a college (based upon our inputs) will determine a quick sort or merged sorted vector of the best
 	//colleges to pick.
 
-	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
-	ifstream collegeData("COP3530 Trimmed Data.csv");
+
+	//Variables defined by user input in GUI
+	string userName; //Just for GUI purposes, like "Welcome, Matthew!" or "Here are your results, Matthew!"
+	string preferredState;
+	int userSAT;
+	int desiredPopulation; //This means that the user wants a student (undergraduate) population less than or equal to the value inputted here
+	int desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
+	bool sortByCost; //Lowest to highest cost of attendance - user selected (like a checkmark?)
 
 	//ALl possible degree programs
 	set<string> listDegrees;
@@ -26,7 +32,9 @@ int main() {
 	//College data pertaining to SAT, admission rate, etc.
 	vector<College> colleges;
 
-	//This will take a minute or two to parse all of the data
+	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
+
+	//Parsing all of the degree options for each school (will take a minute or two)
 	string line;
 	while (getline(degreeData, line)) {
 		string institution, publicPrivate, degreeProgram, degreeType;
@@ -48,11 +56,16 @@ int main() {
 		listDegrees.insert(degreeProgram);
 		collegeDegreeData[institution].push_back(Degree(institution, publicPrivate, degreeProgram, degreeType));
 	}
+	degreeData.close();
 
-	/*for (auto x : degrees) {
+	/*for (auto x : listDegrees) {
 		cout << x << endl;
-	}*/
+	}
+	cout << "\nEnd of Degrees\n\n";*/
 
+	ifstream collegeData("COP3530 Trimmed Data.csv");
+
+	//Filling in the remaining info for every college that exists in the field of study file
 	bool header = 1;
 	while (getline(collegeData, line)) {
 		//Not considering column headers
@@ -87,8 +100,8 @@ int main() {
 
 		admit = stof(admissionRate);
 
-		//A lot of schools are missing 25th and 75th percentile sat data,
-		//so we will make an assumption that a school is valid if their sat requirement is less than x amount greater than the user's
+		/*A lot of schools are missing 25th and 75th percentile sat data,
+		so we will make an assumption that a school is valid if their sat requirement is less than x amount greater than the user's*/
 		getline(ss, satAvg, ',');
 		if (satAvg == "NULL")
 			continue;
@@ -109,12 +122,45 @@ int main() {
 
 		colleges.push_back(College(institution, city, state, admit, satAverage, numUndergrad, numCost));
 	}
+	collegeData.close();
+
+	/*for (auto x : colleges) {
+		cout << x.institution << ": " << x.city << ", " << x.state << ", Adm. Rate: " << x.admissionRate << ", Avg SAT: " << x.satAverage <<", Undergrads: " << x.numUndergraduates << ", Cost per Year: " << x.costAttendance << "\n";
+	}*/
+
+	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
+	vector<pair<College, int>> relevancy;
+
+	int index = 0;
+	for (auto college : colleges) {
+		int count = 0;
+				
+		if (preferredState == college.state)
+			count++;
+		//150 SAT buffer for admission consideration (made-up)
+		if (userSAT + 150 >= college.satAverage)
+			count++;
+		if (desiredAdmissionRate >= college.admissionRate)
+			count++;
+		if (desiredPopulation >= college.numUndergraduates)
+			count++;
 
 
+		if (count > 0)
+			relevancy.push_back(make_pair(college, count));
 
+		index++;
+	}
 
+	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
+	vector<College> result;
 
+	//First we will sort by relevancy points
+		//Quick sort
+		//Merge sort
 
+	//Then, if the user has sort by cost selected, we're going to take sub-arrays of equal relevance and sort THOSE by cost (lowest to highest)
+		//Quick sort multiple sub arrays and push into result vector
 
 	return 0;
 }
