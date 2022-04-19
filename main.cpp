@@ -9,7 +9,10 @@
 #include <algorithm>
 #include <time.h>
 #include <chrono>
+#include <iomanip>
 using namespace std;
+
+void merge(vector<pair<string, int>>& vec, int left, int mid, int right);
 
 void mergeSort(vector<pair<string, int>>& vec, int left, int right) {
 	if (left < right) {
@@ -241,26 +244,38 @@ int main() {
 	//Console asking for user input
 	string fName, lName;
 
-	cout << "Enter first name: " << endl;
+	cout << "Enter first name: ";
 	cin >> fName;
+	cout << endl;
 
-	cout << "Enter last name: " << endl;
+	cout << "Enter last name: ";
 	cin >> lName;
+	cout << endl;
 
-	cout << "Enter in the preferred college state: " << endl;
+	cout << "Enter in the preferred college state: ";
 	cin >> preferredState;
+	cout << endl;
 
-	cout << "Enter in your SAT score: " << endl;
+	cout << "Enter in your SAT score: ";
 	cin >> userSAT;
+	cout << endl;
+	cin.ignore();
 
-	cout << "Enter in the degree of your choice shown above: " << endl;
-	cin >> degree;
+	cout << "Enter in the degree of your choice shown above: ";
+	getline(cin, degree);
+	cout << endl;
 
-	cout << "Enter in the desired college population: " << endl;
+	cout << "Enter in the desired college population: ";
 	cin >> desiredPopulation;
+	cout << endl;
 
-	cout << "Enter in the desired admission rate: " << endl;
+	cout << "Enter in the desired admission rate: ";
 	cin >> desiredAdmissionRate;
+	cout << endl;
+
+	cout << "Enter in the desired cost of attendance: ";
+	cin >> cost;
+	cout << endl;
 
 
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
@@ -272,6 +287,9 @@ int main() {
 
 		if (preferredState == college.second.state)
 			count++;
+		else {
+			continue;
+		}
 		//150 SAT buffer for admission consideration (made-up)
 		if (userSAT + 150 >= college.second.satAverage)
 			count++;
@@ -282,7 +300,7 @@ int main() {
 		if (cost >= college.second.costAttendance)
 			count++;
 
-		bool degreeFound = 0;
+		bool degreeFound = 1;
 		for (int i = 0; i < collegeDegreeData[college.first].size(); i++) {
 			if (collegeDegreeData[college.first][i].program == degree)
 			degreeFound = 1;
@@ -315,7 +333,7 @@ int main() {
 
 	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endQuick - startQuick).count() << " ms" << endl;
 
-	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec";
+	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec" << endl;
 
 	//Merge sort
 //Using chrono to display the time it takes to execute the sorting algorithm
@@ -332,13 +350,26 @@ int main() {
 
 	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endMerge - startMerge).count() << " ms" << endl;
 
-	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec";
+	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec" << endl;
 
+	cout << "\nSorted Colleges:\n";
+
+	for (auto x : relevancyQuick) {
+		cout << setw(15);
+		cout << "School: " << colleges[x.first].institution;
+		cout << setw(15);
+		cout << " City/State: " << colleges[x.first].city << ", " << colleges[x.first].state << " SAT: " << colleges[x.first].satAverage << " Adm Rate: " << colleges[x.first].admissionRate << " Undergrads: " << colleges[x.first].numUndergraduates << " CoA: $" << colleges[x.first].costAttendance << endl;
+	}
 
 	//Resulting sorted vector
-	for (int i = 0; i < relevancyQuick.size(); i++) {
-		result[i] = colleges[relevancyQuick[i].first];
-	}
+	/*for (int i = 0; i < relevancyQuick.size(); i++) {
+		if (colleges.find(relevancyQuick[i].first) != colleges.end())
+			result[i] = colleges[relevancyQuick[i].first];
+	}*/
+
+	/*for (int i = 0; i < result.size(); i++) {
+		cout << "School: " << result[i].institution << ", City/State: " << result[i].city << ", " << result[i].state << ", SAT: " << result[i].satAverage << ", Adm Rate: " << result[i].admissionRate << ", Undergrads: " << result[i].numUndergraduates << ", CoA: $" << result[i].costAttendance << endl;
+	}*/
 
 	return 0;
 }
