@@ -164,11 +164,6 @@ int main() {
 	}
 	degreeData.close();
 
-	/*for (auto x : listDegrees) {
-		cout << x << endl;
-	}
-	cout << "\nEnd of Degrees\n\n";*/
-
 	ifstream collegeData("COP3530 Trimmed Data.csv");
 
 	//Filling in the remaining info for every college that exists in the field of study file
@@ -234,13 +229,41 @@ int main() {
 		cout << x.institution << ": " << x.city << ", " << x.state << ", Adm. Rate: " << x.admissionRate << ", Avg SAT: " << x.satAverage <<", Undergrads: " << x.numUndergraduates << ", Cost per Year: " << x.costAttendance << "\n";
 	}*/
 
+	
+	// Showing all degrees possible
+	for (auto x : listDegrees) {
+		cout << x << endl;
+	}
+	cout << "\nEnd of Degrees\n\n";
+	cout << "Above are the list of all degrees shown for the institutions" << endl;
+	
 	//Console asking for user input
 	string fName, lName;
-	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree ,your SAT score, desired student population, desired admission rate (in decimals), and if you want the data to be sorted by cost (Y/N): << endl;
 	
-	cin >> fName >> lName >> preferredState >> userSAT >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
+	cout << "Enter first name: " << endl;
+	cin >> fName;
 	
+	cout << "Enter last name: " << endl;
+	cin >> lName;
 	
+	cout << "Enter in the preferred college state: " << endl;
+	cin >> preferredState;
+	
+	cout << "Enter in your SAT score: " << endl;
+	cin >> userSAT;
+	
+	cout << "Enter in the degree of your choice shown above: " << endl;
+	cin >> degree;
+	
+	cout << "Enter in the desired college population: " << endl;
+	cin >> desiredPopulation;
+	
+	cout << "Enter in the desired admission rate: " << endl;
+	cin >> desiredAdmissionRate;
+	
+	cout << "Do you want to sort colleges by cost? (Y/N):
+	cin >> sortByCost;
+		
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
 	vector<pair<string, int>> relevancyMerge;
@@ -259,18 +282,16 @@ int main() {
 			count++;
 
 
-		if (count > 0) {
+		if (count > 0 && collegeDegreeData[institution] != degree) {
 			relevancyQuick.push_back(make_pair(college.second.institution, count));
 			relevancyMerge.push_back(make_pair(college.second.institution, count));
 		}
 
 	}
 	
-	//If statement that prints the result vector if user does not want to sort the cost?
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
 	vector<College> result;
-
-	//Else sort and print below?
+	
 	//First we will sort by relevancy points
 		//Quick sort
 	//Using chrono to display the time it takes to execute the sorting algorithm
@@ -310,6 +331,7 @@ int main() {
 	//Then, if the user has sort by cost selected, we're going to take sub-arrays of equal relevance and sort THOSE by cost (lowest to highest)
 		//Quick sort multiple sub arrays and push into result vector
 
+	
 	//Resulting sorted vector
 	for (int i = 0; i < relevancyQuick.size(); i++) {
 		result[i] = colleges[relevancyQuick[i].first];
