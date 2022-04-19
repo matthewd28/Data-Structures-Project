@@ -8,6 +8,68 @@
 #include <set>
 #include <algorithm>
 
+void mergeSort(vector<pair<string, int>>& vec, int left, int right) {
+	if (left < right) {
+		int mid = left + (right - left) / 2;
+		mergeSort(vec, left, mid);
+		mergeSort(vec, mid + 1, right);
+		merge(vec, left, mid, right);
+	}
+}
+
+void merge(vector<pair<string, int>>& vec, int left, int mid, int right) {
+	int n1 = mid - left + 1;
+	int n2 = right - mid;
+	vector<pair<string, int>> X;
+	vector<pair<string,int>> Y;
+
+	for (int i = 0; i < n1; i++) 
+		X.push_back(make_pair(vec[left + i].first, vec[left + i].second));
+	for (int i = 0; i < n2; i++) 
+		Y.push_back(make_pair(vec[mid + i + 1].first, vec[mid + i + 1].second));
+
+	int i = 0, j = 0, k = left;
+	while (i < n1 && j < n2) {
+		if (X[i].second < Y[j].second) {
+			vec[k].first = X[i].first;
+			vec[k].second = X[i].second;
+			i++;
+		}
+		else if (Y[j].second < X[i].second) {
+			vec[k].first = Y[j].first;
+			vec[k].second = Y[j].second;
+			j++;
+		}
+		//If equal relevancy
+		else {
+			vec[k].first = X[i].first;
+			vec[k].second = X[i].second;
+			i++;
+			vec[k].first = Y[j].first;
+			vec[k].second = Y[j].second;
+			j++;
+
+			k++;
+		}
+		k++;
+	}
+
+	while (i < n1) {
+		vec[k].first = X[i].first;
+		vec[k].second = X[i].second;
+		i++;
+		k++;
+	}
+
+	while (j < n2) {
+		vec[k].first = Y[j].first;
+		vec[k].second = Y[j].second;
+		j++;
+		k++;
+	}
+}
+
+
 
 int main() {
 	//Notes for later:
@@ -30,7 +92,7 @@ int main() {
 	map<string, vector<Degree>> collegeDegreeData;
 
 	//College data pertaining to SAT, admission rate, etc.
-	vector<College> colleges;
+	map<string,College> colleges;
 
 	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
 
@@ -120,7 +182,7 @@ int main() {
 
 		numCost = stoi(costAttendance);
 
-		colleges.push_back(College(institution, city, state, admit, satAverage, numUndergrad, numCost));
+		colleges[institution] = College(institution, city, state, admit, satAverage, numUndergrad, numCost);
 	}
 	collegeData.close();
 
@@ -129,25 +191,25 @@ int main() {
 	}*/
 
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
-	vector<pair<College, int>> relevancy;
+	vector<pair<string, int>> relevancy;
 
 	int index = 0;
-	for (auto college : colleges) {
+	for (auto& college : colleges) {
 		int count = 0;
 				
-		if (preferredState == college.state)
+		if (preferredState == college.second.state)
 			count++;
 		//150 SAT buffer for admission consideration (made-up)
-		if (userSAT + 150 >= college.satAverage)
+		if (userSAT + 150 >= college.second.satAverage)
 			count++;
-		if (desiredAdmissionRate >= college.admissionRate)
+		if (desiredAdmissionRate >= college.second.admissionRate)
 			count++;
-		if (desiredPopulation >= college.numUndergraduates)
+		if (desiredPopulation >= college.second.numUndergraduates)
 			count++;
 
 
 		if (count > 0)
-			relevancy.push_back(make_pair(college, count));
+			relevancy.push_back(make_pair(college.second.institution, count));
 
 		index++;
 	}
@@ -157,10 +219,19 @@ int main() {
 
 	//First we will sort by relevancy points
 		//Quick sort
+		
+
 		//Merge sort
+	mergeSort(relevancy, 0, relevancy.size() - 1);
+
 
 	//Then, if the user has sort by cost selected, we're going to take sub-arrays of equal relevance and sort THOSE by cost (lowest to highest)
 		//Quick sort multiple sub arrays and push into result vector
+
+	//Resulting sorted vector
+	for (int i = 0; i < relevancy.size(); i++) {
+		result[i] = colleges[relevancy[i].first];
+	}
 
 	return 0;
 }
