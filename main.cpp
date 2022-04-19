@@ -238,7 +238,6 @@ int main() {
 	vector<pair<string, int>> relevancyQuick;
 	vector<pair<string, int>> relevancyMerge;
 
-	int indexQuick = 0;
 	for (auto& college : colleges) {
 		int count = 0;
 				
@@ -253,31 +252,11 @@ int main() {
 			count++;
 
 
-		if (count > 0)
+		if (count > 0) {
 			relevancyQuick.push_back(make_pair(college.second.institution, count));
-
-		indexQuick++;
-	}
-	
-	int indexMerge = 0;
-	for (auto& college : colleges) {
-		int count = 0;
-				
-		if (preferredState == college.second.state)
-			count++;
-		//150 SAT buffer for admission consideration (made-up)
-		if (userSAT + 150 >= college.second.satAverage)
-			count++;
-		if (desiredAdmissionRate >= college.second.admissionRate)
-			count++;
-		if (desiredPopulation >= college.second.numUndergraduates)
-			count++;
-
-
-		if (count > 0)
 			relevancyMerge.push_back(make_pair(college.second.institution, count));
+		}
 
-		indexMerge++;
 	}
 
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
