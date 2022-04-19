@@ -127,7 +127,7 @@ int main() {
 	int userSAT;
 	int desiredPopulation; //This means that the user wants a student (undergraduate) population less than or equal to the value inputted here
 	float desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
-	bool sortByCost; //Lowest to highest cost of attendance - user selected (like a checkmark?)
+	int cost; //Find colleges that are less expensive than this
 
 	//ALl possible degree programs
 	set<string> listDegrees;
@@ -261,8 +261,6 @@ int main() {
 	cout << "Enter in the desired admission rate: " << endl;
 	cin >> desiredAdmissionRate;
 	
-	cout << "Do you want to sort colleges by cost? (Y/N):
-	cin >> sortByCost;
 		
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
@@ -280,9 +278,17 @@ int main() {
 			count++;
 		if (desiredPopulation >= college.second.numUndergraduates)
 			count++;
+		if (cost >= college.second.costAttendance)
+			count++;
+		
+		bool degreeFound = 0;
+		for (int i = 0; i < collegeDegreeData[college.first]; i++) {
+			if collegeDegreeData[college.first][i] == degree)
+				degreeFound = 1;
+		}
 
 
-		if (count > 0 && collegeDegreeData[institution] != degree) {
+		if (count > 0 && degreeFound == 1) {
 			relevancyQuick.push_back(make_pair(college.second.institution, count));
 			relevancyMerge.push_back(make_pair(college.second.institution, count));
 		}
@@ -326,10 +332,6 @@ int main() {
 	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endMerge - startMerge).count() << " ms" << endl;
 
 	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec";
-
-
-	//Then, if the user has sort by cost selected, we're going to take sub-arrays of equal relevance and sort THOSE by cost (lowest to highest)
-		//Quick sort multiple sub arrays and push into result vector
 
 	
 	//Resulting sorted vector
