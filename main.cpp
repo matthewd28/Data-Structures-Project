@@ -30,12 +30,12 @@ void merge(vector<pair<string, int>>& vec, int left, int mid, int right) {
 
 	int i = 0, j = 0, k = left;
 	while (i < n1 && j < n2) {
-		if (X[i].second < Y[j].second) {
+		if (X[i].second > Y[j].second) {
 			vec[k].first = X[i].first;
 			vec[k].second = X[i].second;
 			i++;
 		}
-		else if (Y[j].second < X[i].second) {
+		else if (Y[j].second > X[i].second) {
 			vec[k].first = Y[j].first;
 			vec[k].second = Y[j].second;
 			j++;
