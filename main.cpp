@@ -126,7 +126,7 @@ int main() {
 	string preferredState;
 	int userSAT;
 	int desiredPopulation; //This means that the user wants a student (undergraduate) population less than or equal to the value inputted here
-	int desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
+	float desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
 	bool sortByCost; //Lowest to highest cost of attendance - user selected (like a checkmark?)
 
 	//ALl possible degree programs
@@ -236,9 +236,10 @@ int main() {
 
 	//Console asking for user input
 	string fName, lName;
-	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree,your SAT score, desired student population, desired admission rate, and if you want the data to be sorted by cost (Y/N): << endl;
+	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree ,your SAT score, desired student population, desired admission rate (in decimals), and if you want the data to be sorted by cost (Y/N): << endl;
 	
 	cin >> fName >> lName >> preferredState >> userSAT >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
+	
 	
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
@@ -264,10 +265,12 @@ int main() {
 		}
 
 	}
-
+	
+	//If statement that prints the result vector if user does not want to sort the cost?
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
 	vector<College> result;
 
+	//Else sort and print below?
 	//First we will sort by relevancy points
 		//Quick sort
 	//Using chrono to display the time it takes to execute the sorting algorithm
