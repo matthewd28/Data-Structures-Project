@@ -7,6 +7,9 @@
 #include <map>
 #include <set>
 #include <algorithm>
+#include <time.h>
+#include <chrono>
+using namespace std;
 
 void mergeSort(vector<pair<string, int>>& vec, int left, int right) {
 	if (left < right) {
@@ -69,7 +72,48 @@ void merge(vector<pair<string, int>>& vec, int left, int mid, int right) {
 	}
 }
 
+//Start QuickSort algorithm
+int partition(vector<pair<string, int>>& vec, int low, int high){
+    int pivot = vec[low].second;
+    int up = low;
+    int down = high;
 
+    while(up < down){
+        for(int i = up; i < high; i++){
+            if(vec[up].second > pivot){
+                break;
+            }
+            up++;
+        }
+
+        for(int i = high; i > low; i--){
+            if(vec[down].second < pivot){
+                break;
+            }
+            down--;
+        }
+	
+	//swap both college name and relevancy point
+        if(up < down){
+            swap(vec[up].second, vec[down].second);
+            swap(vec[up].first, vec[down].first);
+        }
+    }
+	
+    //swap both college name and relevancy point
+    swap(vec[low].second, vec[down].second);
+    swap(vec[up].first, vec[down].first);
+    return down;
+}
+
+//Recursively call QuickSort to sort the vector based on relevancy point
+void quickSort(vector<pair<string, int>>& vec, int low, int high){
+    if(low < high){
+        int pivot = partition(vec, low, high);
+        quickSort(vec, low, pivot - 1);
+        quickSort(vec, pivot + 1, high);
+    }
+}
 
 int main() {
 	//Notes for later:
@@ -219,10 +263,38 @@ int main() {
 
 	//First we will sort by relevancy points
 		//Quick sort
-		
+	//Using chrono to display the time it takes to execute the sorting algorithm
+	auto startQuick = chrono::steady_clock::now();
+ 
+	quickSort(relevancy, 0, relevancy.size() - 1);
+
+	auto endQuick = chrono::steady_clock::now();
+	
+	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
+	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endQuick - startQuick).count() << " ns" << endl;
+
+	cout << "Elapsed time in microseconds: " << chrono::duration_cast<chrono::microseconds>(endQuick - startQuick).count() << " µs" << endl;
+
+	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endQuick - startQuick).count() << " ms" << endl;
+
+	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec";
 
 		//Merge sort
+	//Using chrono to display the time it takes to execute the sorting algorithm
+	auto startMerge = chrono::steady_clock::now();
+	
 	mergeSort(relevancy, 0, relevancy.size() - 1);
+	
+	auto endMerge = chrono::steady_clock::now();
+	
+	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
+	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endMerge - startMerge).count() << " ns" << endl;
+
+	cout << "Elapsed time in microseconds: " << chrono::duration_cast<chrono::microseconds>(endMerge - startMerge).count() << " µs" << endl;
+
+	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endMerge - startMerge).count() << " ms" << endl;
+
+	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec";
 
 
 	//Then, if the user has sort by cost selected, we're going to take sub-arrays of equal relevance and sort THOSE by cost (lowest to highest)
