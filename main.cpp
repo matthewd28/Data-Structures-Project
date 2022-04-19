@@ -138,7 +138,7 @@ int main() {
 	//College data pertaining to SAT, admission rate, etc.
 	map<string,College> colleges;
 
-	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
+	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");	
 
 	//Parsing all of the degree options for each school (will take a minute or two)
 	string line;
@@ -234,6 +234,12 @@ int main() {
 		cout << x.institution << ": " << x.city << ", " << x.state << ", Adm. Rate: " << x.admissionRate << ", Avg SAT: " << x.satAverage <<", Undergrads: " << x.numUndergraduates << ", Cost per Year: " << x.costAttendance << "\n";
 	}*/
 
+	//Console asking for user input
+	string fName, lName;
+	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree, desired student population, desired admission rate, and if you want the data to be sorted by cost (y/n): << endl;
+	
+	cin >> fName >> lName >> preferredState >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
+	
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
 	vector<pair<string, int>> relevancyMerge;
