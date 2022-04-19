@@ -236,7 +236,7 @@ int main() {
 
 	//Console asking for user input
 	string fName, lName;
-	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree, desired SAT average score, desired student population, desired admission rate, and if you want the data to be sorted by cost (y/n): << endl;
+	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree,your SAT score, desired student population, desired admission rate, and if you want the data to be sorted by cost (Y/N): << endl;
 	
 	cin >> fName >> lName >> preferredState >> userSAT >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
 	
