@@ -235,9 +235,10 @@ int main() {
 	}*/
 
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
-	vector<pair<string, int>> relevancy;
+	vector<pair<string, int>> relevancyQuick;
+	vector<pair<string, int>> relevancyMerge;
 
-	int index = 0;
+	int indexQuick = 0;
 	for (auto& college : colleges) {
 		int count = 0;
 				
@@ -253,9 +254,30 @@ int main() {
 
 
 		if (count > 0)
-			relevancy.push_back(make_pair(college.second.institution, count));
+			relevancyQuick.push_back(make_pair(college.second.institution, count));
 
-		index++;
+		indexQuick++;
+	}
+	
+	int indexMerge = 0;
+	for (auto& college : colleges) {
+		int count = 0;
+				
+		if (preferredState == college.second.state)
+			count++;
+		//150 SAT buffer for admission consideration (made-up)
+		if (userSAT + 150 >= college.second.satAverage)
+			count++;
+		if (desiredAdmissionRate >= college.second.admissionRate)
+			count++;
+		if (desiredPopulation >= college.second.numUndergraduates)
+			count++;
+
+
+		if (count > 0)
+			relevancyMerge.push_back(make_pair(college.second.institution, count));
+
+		indexMerge++;
 	}
 
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
@@ -266,7 +288,7 @@ int main() {
 	//Using chrono to display the time it takes to execute the sorting algorithm
 	auto startQuick = chrono::steady_clock::now();
  
-	quickSort(relevancy, 0, relevancy.size() - 1);
+	quickSort(relevancyQuick, 0, relevancyQuick.size() - 1);
 
 	auto endQuick = chrono::steady_clock::now();
 	
@@ -283,7 +305,7 @@ int main() {
 	//Using chrono to display the time it takes to execute the sorting algorithm
 	auto startMerge = chrono::steady_clock::now();
 	
-	mergeSort(relevancy, 0, relevancy.size() - 1);
+	mergeSort(relevancyMerge, 0, relevancyMerge.size() - 1);
 	
 	auto endMerge = chrono::steady_clock::now();
 	
@@ -301,8 +323,8 @@ int main() {
 		//Quick sort multiple sub arrays and push into result vector
 
 	//Resulting sorted vector
-	for (int i = 0; i < relevancy.size(); i++) {
-		result[i] = colleges[relevancy[i].first];
+	for (int i = 0; i < relevancyQuick.size(); i++) {
+		result[i] = colleges[relevancyQuick[i].first];
 	}
 
 	return 0;
