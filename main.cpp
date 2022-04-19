@@ -236,9 +236,9 @@ int main() {
 
 	//Console asking for user input
 	string fName, lName;
-	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree, desired student population, desired admission rate, and if you want the data to be sorted by cost (y/n): << endl;
+	cout << "Please input your first and last name, followed by your preferred state (abbreviated), degree, desired SAT average score, desired student population, desired admission rate, and if you want the data to be sorted by cost (y/n): << endl;
 	
-	cin >> fName >> lName >> preferredState >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
+	cin >> fName >> lName >> preferredState >> userSAT >> degree >> desiredPopulation >> desiredAdmissionRate >> sortByCost;
 	
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
