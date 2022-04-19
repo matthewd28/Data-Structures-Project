@@ -24,11 +24,11 @@ void merge(vector<pair<string, int>>& vec, int left, int mid, int right) {
 	int n1 = mid - left + 1;
 	int n2 = right - mid;
 	vector<pair<string, int>> X;
-	vector<pair<string,int>> Y;
+	vector<pair<string, int>> Y;
 
-	for (int i = 0; i < n1; i++) 
+	for (int i = 0; i < n1; i++)
 		X.push_back(make_pair(vec[left + i].first, vec[left + i].second));
-	for (int i = 0; i < n2; i++) 
+	for (int i = 0; i < n2; i++)
 		Y.push_back(make_pair(vec[mid + i + 1].first, vec[mid + i + 1].second));
 
 	int i = 0, j = 0, k = left;
@@ -73,46 +73,46 @@ void merge(vector<pair<string, int>>& vec, int left, int mid, int right) {
 }
 
 //Start QuickSort algorithm
-int partition(vector<pair<string, int>>& vec, int low, int high){
-    int pivot = vec[low].second;
-    int up = low;
-    int down = high;
+int partition(vector<pair<string, int>>& vec, int low, int high) {
+	int pivot = vec[low].second;
+	int up = low;
+	int down = high;
 
-    while(up < down){
-        for(int i = up; i < high; i++){
-            if(vec[up].second > pivot){
-                break;
-            }
-            up++;
-        }
+	while (up < down) {
+		for (int i = up; i < high; i++) {
+			if (vec[up].second > pivot) {
+				break;
+			}
+			up++;
+		}
 
-        for(int i = high; i > low; i--){
-            if(vec[down].second < pivot){
-                break;
-            }
-            down--;
-        }
-	
+		for (int i = high; i > low; i--) {
+			if (vec[down].second < pivot) {
+				break;
+			}
+			down--;
+		}
+
+		//swap both college name and relevancy point
+		if (up < down) {
+			swap(vec[up].second, vec[down].second);
+			swap(vec[up].first, vec[down].first);
+		}
+	}
+
 	//swap both college name and relevancy point
-        if(up < down){
-            swap(vec[up].second, vec[down].second);
-            swap(vec[up].first, vec[down].first);
-        }
-    }
-	
-    //swap both college name and relevancy point
-    swap(vec[low].second, vec[down].second);
-    swap(vec[up].first, vec[down].first);
-    return down;
+	swap(vec[low].second, vec[down].second);
+	swap(vec[up].first, vec[down].first);
+	return down;
 }
 
 //Recursively call QuickSort to sort the vector based on relevancy point
-void quickSort(vector<pair<string, int>>& vec, int low, int high){
-    if(low < high){
-        int pivot = partition(vec, low, high);
-        quickSort(vec, low, pivot - 1);
-        quickSort(vec, pivot + 1, high);
-    }
+void quickSort(vector<pair<string, int>>& vec, int low, int high) {
+	if (low < high) {
+		int pivot = partition(vec, low, high);
+		quickSort(vec, low, pivot - 1);
+		quickSort(vec, pivot + 1, high);
+	}
 }
 
 int main() {
@@ -128,6 +128,7 @@ int main() {
 	int desiredPopulation; //This means that the user wants a student (undergraduate) population less than or equal to the value inputted here
 	float desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
 	int cost; //Find colleges that are less expensive than this
+	string degree;
 
 	//ALl possible degree programs
 	set<string> listDegrees;
@@ -136,16 +137,16 @@ int main() {
 	map<string, vector<Degree>> collegeDegreeData;
 
 	//College data pertaining to SAT, admission rate, etc.
-	map<string,College> colleges;
+	map<string, College> colleges;
 
-	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");	
+	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
 
 	//Parsing all of the degree options for each school (will take a minute or two)
 	string line;
 	while (getline(degreeData, line)) {
 		string institution, publicPrivate, degreeProgram, degreeType;
 		stringstream ss(line);
-	
+
 		getline(ss, institution, ',');
 		replace(institution.begin(), institution.end(), '.', ',');
 
@@ -179,7 +180,7 @@ int main() {
 		int numUndergrad, numCost;
 		float admit, satAverage;
 		stringstream ss(line);
-		
+
 
 		//We only want to consider the colleges that were found in the field of study file
 		getline(ss, institution, ',');
@@ -229,46 +230,46 @@ int main() {
 		cout << x.institution << ": " << x.city << ", " << x.state << ", Adm. Rate: " << x.admissionRate << ", Avg SAT: " << x.satAverage <<", Undergrads: " << x.numUndergraduates << ", Cost per Year: " << x.costAttendance << "\n";
 	}*/
 
-	
+
 	// Showing all degrees possible
 	for (auto x : listDegrees) {
 		cout << x << endl;
 	}
 	cout << "\nEnd of Degrees\n\n";
 	cout << "Above are the list of all degrees shown for the institutions" << endl;
-	
+
 	//Console asking for user input
 	string fName, lName;
-	
+
 	cout << "Enter first name: " << endl;
 	cin >> fName;
-	
+
 	cout << "Enter last name: " << endl;
 	cin >> lName;
-	
+
 	cout << "Enter in the preferred college state: " << endl;
 	cin >> preferredState;
-	
+
 	cout << "Enter in your SAT score: " << endl;
 	cin >> userSAT;
-	
+
 	cout << "Enter in the degree of your choice shown above: " << endl;
 	cin >> degree;
-	
+
 	cout << "Enter in the desired college population: " << endl;
 	cin >> desiredPopulation;
-	
+
 	cout << "Enter in the desired admission rate: " << endl;
 	cin >> desiredAdmissionRate;
-	
-		
+
+
 	//Each college will be assigned a "score" defined by the user's inputs. For every user critera that matches a college, a relevancy point will be added to the college.
 	vector<pair<string, int>> relevancyQuick;
 	vector<pair<string, int>> relevancyMerge;
 
 	for (auto& college : colleges) {
 		int count = 0;
-				
+
 		if (preferredState == college.second.state)
 			count++;
 		//150 SAT buffer for admission consideration (made-up)
@@ -280,11 +281,11 @@ int main() {
 			count++;
 		if (cost >= college.second.costAttendance)
 			count++;
-		
+
 		bool degreeFound = 0;
-		for (int i = 0; i < collegeDegreeData[college.first]; i++) {
-			if collegeDegreeData[college.first][i] == degree)
-				degreeFound = 1;
+		for (int i = 0; i < collegeDegreeData[college.first].size(); i++) {
+			if (collegeDegreeData[college.first][i].program == degree)
+			degreeFound = 1;
 		}
 
 
@@ -294,19 +295,19 @@ int main() {
 		}
 
 	}
-	
+
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
 	vector<College> result;
-	
+
 	//First we will sort by relevancy points
 		//Quick sort
 	//Using chrono to display the time it takes to execute the sorting algorithm
 	auto startQuick = chrono::steady_clock::now();
- 
+
 	quickSort(relevancyQuick, 0, relevancyQuick.size() - 1);
 
 	auto endQuick = chrono::steady_clock::now();
-	
+
 	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
 	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endQuick - startQuick).count() << " ns" << endl;
 
@@ -316,14 +317,14 @@ int main() {
 
 	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec";
 
-		//Merge sort
-	//Using chrono to display the time it takes to execute the sorting algorithm
+	//Merge sort
+//Using chrono to display the time it takes to execute the sorting algorithm
 	auto startMerge = chrono::steady_clock::now();
-	
+
 	mergeSort(relevancyMerge, 0, relevancyMerge.size() - 1);
-	
+
 	auto endMerge = chrono::steady_clock::now();
-	
+
 	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
 	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endMerge - startMerge).count() << " ns" << endl;
 
@@ -333,7 +334,7 @@ int main() {
 
 	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec";
 
-	
+
 	//Resulting sorted vector
 	for (int i = 0; i < relevancyQuick.size(); i++) {
 		result[i] = colleges[relevancyQuick[i].first];
