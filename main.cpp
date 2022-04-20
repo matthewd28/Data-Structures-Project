@@ -290,20 +290,31 @@ int main() {
 		else {
 			continue;
 		}
-		//150 SAT buffer for admission consideration (made-up)
-		if (userSAT + 150 >= college.second.satAverage)
+		if (userSAT >= college.second.satAverage)
 			count++;
-		if (desiredAdmissionRate >= college.second.admissionRate)
+		else {
+			continue;
+		}
+		if (desiredAdmissionRate <= college.second.admissionRate)
 			count++;
+		else {
+			continue;
+		}
 		if (desiredPopulation >= college.second.numUndergraduates)
 			count++;
+		else {
+			continue;
+		}
 		if (cost >= college.second.costAttendance)
 			count++;
+		else {
+			continue;
+		}
 
 		bool degreeFound = 1;
 		for (int i = 0; i < collegeDegreeData[college.first].size(); i++) {
 			if (collegeDegreeData[college.first][i].program == degree)
-			degreeFound = 1;
+				degreeFound = 1;
 		}
 
 
@@ -327,13 +338,14 @@ int main() {
 	auto endQuick = chrono::steady_clock::now();
 
 	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
-	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endQuick - startQuick).count() << " ns" << endl;
+	cout << "Elapsed time in nanoseconds for quicksort: " << chrono::duration_cast<chrono::nanoseconds>(endQuick - startQuick).count() << " ns" << endl;
 
-	cout << "Elapsed time in microseconds: " << chrono::duration_cast<chrono::microseconds>(endQuick - startQuick).count() << " µs" << endl;
+	cout << "Elapsed time in microseconds for quicksort: " << chrono::duration_cast<chrono::microseconds>(endQuick - startQuick).count() << " µs" << endl;
 
-	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endQuick - startQuick).count() << " ms" << endl;
+	cout << "Elapsed time in milliseconds for quicksort: " << chrono::duration_cast<chrono::milliseconds>(endQuick - startQuick).count() << " ms" << endl;
 
-	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec" << endl;
+	cout << "Elapsed time in seconds for quicksort: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec" << endl;
+	cout << endl;
 
 	//Merge sort
 //Using chrono to display the time it takes to execute the sorting algorithm
@@ -344,24 +356,22 @@ int main() {
 	auto endMerge = chrono::steady_clock::now();
 
 	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
-	cout << "Elapsed time in nanoseconds: " << chrono::duration_cast<chrono::nanoseconds>(endMerge - startMerge).count() << " ns" << endl;
+	cout << "Elapsed time in nanoseconds for mergesort: " << chrono::duration_cast<chrono::nanoseconds>(endMerge - startMerge).count() << " ns" << endl;
 
-	cout << "Elapsed time in microseconds: " << chrono::duration_cast<chrono::microseconds>(endMerge - startMerge).count() << " µs" << endl;
+	cout << "Elapsed time in microseconds for mergesort: " << chrono::duration_cast<chrono::microseconds>(endMerge - startMerge).count() << " µs" << endl;
 
-	cout << "Elapsed time in milliseconds: " << chrono::duration_cast<chrono::milliseconds>(endMerge - startMerge).count() << " ms" << endl;
+	cout << "Elapsed time in milliseconds for mergesort: " << chrono::duration_cast<chrono::milliseconds>(endMerge - startMerge).count() << " ms" << endl;
 
-	cout << "Elapsed time in seconds: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec" << endl;
+	cout << "Elapsed time in seconds for mergesort: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec" << endl;
 
 	cout << "\nSorted Colleges:\n";
 
 	for (auto x : relevancyQuick) {
-		cout << setw(15);
-		cout << "School: " << colleges[x.first].institution;
-		cout << setw(15);
-		cout << " City/State: " << colleges[x.first].city << ", " << colleges[x.first].state << " SAT: " << colleges[x.first].satAverage << " Adm Rate: " << colleges[x.first].admissionRate << " Undergrads: " << colleges[x.first].numUndergraduates << " CoA: $" << colleges[x.first].costAttendance << endl;
+		cout << "     ";
+		cout << "School: " << left << setw(55) << colleges[x.first].institution;
+		cout << " City/State: " << left << setw(17) << colleges[x.first].city << "/ " << left << setw(5) << colleges[x.first].state << " SAT: " << left << setw(5) << colleges[x.first].satAverage << " Adm Rate: " << left << setw(9) << colleges[x.first].admissionRate << " Undergrads: " << left << setw(7) << colleges[x.first].numUndergraduates << " CoA: $" << colleges[x.first].costAttendance << endl;
 	}
 
-	//Resulting sorted vector
 	/*for (int i = 0; i < relevancyQuick.size(); i++) {
 		if (colleges.find(relevancyQuick[i].first) != colleges.end())
 			result[i] = colleges[relevancyQuick[i].first];
