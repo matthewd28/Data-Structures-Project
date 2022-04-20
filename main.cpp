@@ -121,7 +121,6 @@ void quickSort(vector<pair<string, int>>& vec, int low, int high) {
 }
 
 int main() {
-	//Notes for later:
 	//We're going to have "relevancy points," where each criteria that is met by a college (based upon our inputs) will determine a quick sort or merged sorted vector of the best colleges to pick.
 
 	//Variables defined by user input
