@@ -287,10 +287,11 @@ int main() {
 			continue;
 		}
 		
-		//If the colleges SAT average is around the users input, add a relevancy point
+		//If the colleges SAT average is around +- 150 of the user's input, add a relevancy point
 		if (userSAT >= college.second.satAverage - 150 && userSAT <= college.second.satAverage + 150){
 			count++;
 			colleges[college.first].relevancyPts++;
+			// If the colleges SAT average is even narrower by +- 50 of the user's input, add another relevancy point
 			if(userSAT >= college.second.satAverage - 50 && userSAT <= college.second.satAverage + 50){
 				count++;
 				colleges[college.first].relevancyPts++;
@@ -309,10 +310,11 @@ int main() {
 				colleges[college.first].relevancyPts++;
 			}
 		
-		//If the colleges population is around the user input, add a point. Adds another point if the population is closer to user input
+		//If the colleges population is around the user input +- 5000, add a relevancy point
 		if (desiredPopulation >= college.second.numUndergraduates - 5000 && desiredPopulation <= college.second.numUndergraduates + 5000){
 			count++;
 			colleges[college.first].relevancyPts++;
+			// If the colleges population is even narrower around +- 2500, add another relevancy point
 			if(desiredPopulation >= college.second.numUndergraduates - 2500 && desiredPopulation <= college.second.numUndergraduates + 2500){
 				count++;
 				colleges[college.first].relevancyPts++;
