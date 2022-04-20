@@ -5,6 +5,7 @@
 #include <sstream>
 #include <vector>
 #include <map>
+#include <unordered_map>
 #include <set>
 #include <algorithm>
 #include <time.h>
@@ -105,7 +106,7 @@ int partition(vector<pair<string, int>>& vec, int low, int high) {
 
 	//swap both college name and relevancy point
 	swap(vec[low].second, vec[down].second);
-	swap(vec[up].first, vec[down].first);
+	swap(vec[low].first, vec[down].first);
 	return down;
 }
 
@@ -225,7 +226,7 @@ int main() {
 
 		numCost = stoi(costAttendance);
 
-		colleges[institution] = College(institution, city, state, admit, satAverage, numUndergrad, numCost);
+		colleges[institution] = College(institution, city, state, admit, satAverage, numUndergrad, numCost, 0);
 	}
 	collegeData.close();
 
@@ -285,31 +286,51 @@ int main() {
 	for (auto& college : colleges) {
 		int count = 0;
 
-		if (preferredState == college.second.state)
+		if (preferredState == college.second.state){
 			count++;
-		else {
+			colleges[college.first].relevancyPts++;
+		}
+		else{
 			continue;
 		}
-		if (userSAT >= college.second.satAverage)
+
+		if (userSAT >= college.second.satAverage - 150 && userSAT <= college.second.satAverage + 150){
 			count++;
-		else {
-			continue;
+			colleges[college.first].relevancyPts++;
+			if(userSAT >= college.second.satAverage - 50 && userSAT <= college.second.satAverage + 50){
+				count++;
+				colleges[college.first].relevancyPts++;
+			}
 		}
-		if (desiredAdmissionRate <= college.second.admissionRate)
+		
+		if (desiredAdmissionRate <= college.second.admissionRate){
 			count++;
-		else {
-			continue;
+			colleges[college.first].relevancyPts++;
 		}
-		if (desiredPopulation >= college.second.numUndergraduates)
+
+		if(desiredAdmissionRate >= college.second.admissionRate - 0.1 && desiredAdmissionRate <= college.second.admissionRate + 0.1){
+				count++;
+				colleges[college.first].relevancyPts++;
+			}
+		
+		if (desiredPopulation >= college.second.numUndergraduates - 5000 && desiredPopulation <= college.second.numUndergraduates + 5000){
 			count++;
-		else {
-			continue;
+			colleges[college.first].relevancyPts++;
+			if(desiredPopulation >= college.second.numUndergraduates - 2500 && desiredPopulation <= college.second.numUndergraduates + 2500){
+				count++;
+				colleges[college.first].relevancyPts++;
+			}
 		}
-		if (cost >= college.second.costAttendance)
+		
+		if (cost >= college.second.costAttendance){
 			count++;
-		else {
-			continue;
+			colleges[college.first].relevancyPts++;
 		}
+		
+		if(cost >= college.second.costAttendance - 5000 && cost <= college.second.costAttendance + 5000){
+				count++;
+				colleges[college.first].relevancyPts++;
+			}
 
 		bool degreeFound = 1;
 		for (int i = 0; i < collegeDegreeData[college.first].size(); i++) {
@@ -327,6 +348,8 @@ int main() {
 
 	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
 	vector<College> result;
+
+	unordered_map<string, int> relevancyQuickMap;
 
 	//First we will sort by relevancy points
 		//Quick sort
@@ -369,7 +392,7 @@ int main() {
 	for (auto x : relevancyQuick) {
 		cout << "     ";
 		cout << "School: " << left << setw(55) << colleges[x.first].institution;
-		cout << " City/State: " << left << setw(17) << colleges[x.first].city << "/ " << left << setw(5) << colleges[x.first].state << " SAT: " << left << setw(5) << colleges[x.first].satAverage << " Adm Rate: " << left << setw(9) << colleges[x.first].admissionRate << " Undergrads: " << left << setw(7) << colleges[x.first].numUndergraduates << " CoA: $" << colleges[x.first].costAttendance << endl;
+		cout << " City/State: " << left << setw(17) << colleges[x.first].city << "/ " << left << setw(5) << colleges[x.first].state << " SAT: " << left << setw(5) << colleges[x.first].satAverage << " Adm Rate: " << left << setw(9) << colleges[x.first].admissionRate << " Undergrads: " << left << setw(7) << colleges[x.first].numUndergraduates << " CoA: $" << left << setw(9) << colleges[x.first].costAttendance << "Relevancy Pts: " << colleges[x.first].relevancyPts << endl;
 	}
 
 	/*for (int i = 0; i < relevancyQuick.size(); i++) {
