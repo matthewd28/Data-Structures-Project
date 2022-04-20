@@ -15,6 +15,7 @@ using namespace std;
 
 void merge(vector<pair<string, int>>& vec, int left, int mid, int right);
 
+//Start mergeSort algorithm
 void mergeSort(vector<pair<string, int>>& vec, int left, int right) {
 	if (left < right) {
 		int mid = left + (right - left) / 2;
@@ -121,20 +122,18 @@ void quickSort(vector<pair<string, int>>& vec, int low, int high) {
 
 int main() {
 	//Notes for later:
-	//So basically we're going to have "relevancy points," where each criteria that is met by a college (based upon our inputs) will determine a quick sort or merged sorted vector of the best
-	//colleges to pick.
+	//We're going to have "relevancy points," where each criteria that is met by a college (based upon our inputs) will determine a quick sort or merged sorted vector of the best colleges to pick.
 
-
-	//Variables defined by user input in GUI
-	string userName; //Just for GUI purposes, like "Welcome, Matthew!" or "Here are your results, Matthew!"
-	string preferredState;
-	int userSAT;
+	//Variables defined by user input
+	string userName;
+	string preferredState; //This will only take into account the colleges in the state inputted
+	int userSAT; //This means the user wants a SAT average close to their input
 	int desiredPopulation; //This means that the user wants a student (undergraduate) population less than or equal to the value inputted here
 	float desiredAdmissionRate; //This means that the user wants an admission rate less than or equal to the value inputted here
 	int cost; //Find colleges that are less expensive than this
-	string degree;
+	string degree; //Will take into account the degree program the user wants to look into
 
-	//ALl possible degree programs
+	//All possible degree programs
 	set<string> listDegrees;
 
 	//The degrees possible for each college
@@ -145,7 +144,7 @@ int main() {
 
 	ifstream degreeData("Most-Recent-Cohorts-Field-of-Study.csv");
 
-	//Parsing all of the degree options for each school (will take a minute or two)
+	//Parsing all of the degree options for each school
 	string line;
 	while (getline(degreeData, line)) {
 		string institution, publicPrivate, degreeProgram, degreeType;
@@ -206,8 +205,6 @@ int main() {
 
 		admit = stof(admissionRate);
 
-		/*A lot of schools are missing 25th and 75th percentile sat data,
-		so we will make an assumption that a school is valid if their sat requirement is less than x amount greater than the user's*/
 		getline(ss, satAvg, ',');
 		if (satAvg == "NULL")
 			continue;
@@ -230,15 +227,11 @@ int main() {
 	}
 	collegeData.close();
 
-	/*for (auto x : colleges) {
-		cout << x.institution << ": " << x.city << ", " << x.state << ", Adm. Rate: " << x.admissionRate << ", Avg SAT: " << x.satAverage <<", Undergrads: " << x.numUndergraduates << ", Cost per Year: " << x.costAttendance << "\n";
-	}*/
-
-
 	// Showing all degrees possible
 	for (auto x : listDegrees) {
 		cout << x << endl;
 	}
+	
 	cout << "\nEnd of Degrees\n\n";
 	cout << "Above are the list of all degrees shown for the institutions" << endl;
 
@@ -285,7 +278,8 @@ int main() {
 
 	for (auto& college : colleges) {
 		int count = 0;
-
+		
+		//If the college is in the state the user inputted, then add a point and look at the statistics. Else go to the next college
 		if (preferredState == college.second.state){
 			count++;
 			colleges[college.first].relevancyPts++;
@@ -293,7 +287,8 @@ int main() {
 		else{
 			continue;
 		}
-
+		
+		//If the colleges SAT average is around the users input, add a relevancy point
 		if (userSAT >= college.second.satAverage - 150 && userSAT <= college.second.satAverage + 150){
 			count++;
 			colleges[college.first].relevancyPts++;
@@ -303,16 +298,19 @@ int main() {
 			}
 		}
 		
+		//If the colleges admission rate higher the users input (meaning college is likely to accept user), add a relevancy point
 		if (desiredAdmissionRate <= college.second.admissionRate){
 			count++;
 			colleges[college.first].relevancyPts++;
 		}
-
+		
+		//If the colleges admission rate is around the users input, add a relevancy point
 		if(desiredAdmissionRate >= college.second.admissionRate - 0.1 && desiredAdmissionRate <= college.second.admissionRate + 0.1){
 				count++;
 				colleges[college.first].relevancyPts++;
 			}
 		
+		//If the colleges population is around the user input, add a point. Adds another point if the population is closer to user input
 		if (desiredPopulation >= college.second.numUndergraduates - 5000 && desiredPopulation <= college.second.numUndergraduates + 5000){
 			count++;
 			colleges[college.first].relevancyPts++;
@@ -322,23 +320,26 @@ int main() {
 			}
 		}
 		
+		//If the colleges tuition cost is below the user input, add a relevancy point
 		if (cost >= college.second.costAttendance){
 			count++;
 			colleges[college.first].relevancyPts++;
 		}
 		
+		//If the colleges tuition cost is around the user input, add a relevancy point
 		if(cost >= college.second.costAttendance - 5000 && cost <= college.second.costAttendance + 5000){
 				count++;
 				colleges[college.first].relevancyPts++;
 			}
-
+		
+		//If the college has the degree program the user inputted
 		bool degreeFound = 1;
 		for (int i = 0; i < collegeDegreeData[college.first].size(); i++) {
 			if (collegeDegreeData[college.first][i].program == degree)
 				degreeFound = 1;
 		}
 
-
+		//Add the college with its dedeicated relevancy point total to a vector to be sorted
 		if (count > 0 && degreeFound == 1) {
 			relevancyQuick.push_back(make_pair(college.second.institution, count));
 			relevancyMerge.push_back(make_pair(college.second.institution, count));
@@ -346,21 +347,17 @@ int main() {
 
 	}
 
-	//If sort by cost is disabled, this result will be after the first sort. If enabled, after sorting each subarray of equal relevance
 	vector<College> result;
 
-	unordered_map<string, int> relevancyQuickMap;
-
-	//First we will sort by relevancy points
-		//Quick sort
-	//Using chrono to display the time it takes to execute the sorting algorithm
+	//First we will sort by relevancy points using quick sort
+	//Also using chrono library to display the time it takes to execute the quick sort algorithm
 	auto startQuick = chrono::steady_clock::now();
 
 	quickSort(relevancyQuick, 0, relevancyQuick.size() - 1);
 
 	auto endQuick = chrono::steady_clock::now();
 
-	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
+	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds for quick sort
 	cout << "Elapsed time in nanoseconds for quicksort: " << chrono::duration_cast<chrono::nanoseconds>(endQuick - startQuick).count() << " ns" << endl;
 
 	cout << "Elapsed time in microseconds for quicksort: " << chrono::duration_cast<chrono::microseconds>(endQuick - startQuick).count() << " µs" << endl;
@@ -370,15 +367,15 @@ int main() {
 	cout << "Elapsed time in seconds for quicksort: " << chrono::duration_cast<chrono::seconds>(endQuick - startQuick).count() << " sec" << endl;
 	cout << endl;
 
-	//Merge sort
-//Using chrono to display the time it takes to execute the sorting algorithm
+	//Next, we will sort the relevancy points using merge sort
+	//Using chrono library to display the time it takes to execute the merge sort algorithm
 	auto startMerge = chrono::steady_clock::now();
 
 	mergeSort(relevancyMerge, 0, relevancyMerge.size() - 1);
 
 	auto endMerge = chrono::steady_clock::now();
 
-	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds
+	//Displaying the time it took to sort in seconds, milliseconds, microseconds, and nanoseconds for merge sort
 	cout << "Elapsed time in nanoseconds for mergesort: " << chrono::duration_cast<chrono::nanoseconds>(endMerge - startMerge).count() << " ns" << endl;
 
 	cout << "Elapsed time in microseconds for mergesort: " << chrono::duration_cast<chrono::microseconds>(endMerge - startMerge).count() << " µs" << endl;
@@ -388,21 +385,12 @@ int main() {
 	cout << "Elapsed time in seconds for mergesort: " << chrono::duration_cast<chrono::seconds>(endMerge - startMerge).count() << " sec" << endl;
 
 	cout << "\nSorted Colleges:\n";
-
+	
+	//Displaying the colleges with its statistics based on the user input. In order from bottom up, with most relevant being at the bottom of the list
 	for (auto x : relevancyQuick) {
 		cout << "     ";
 		cout << "School: " << left << setw(55) << colleges[x.first].institution;
 		cout << " City/State: " << left << setw(17) << colleges[x.first].city << "/ " << left << setw(5) << colleges[x.first].state << " SAT: " << left << setw(5) << colleges[x.first].satAverage << " Adm Rate: " << left << setw(9) << colleges[x.first].admissionRate << " Undergrads: " << left << setw(7) << colleges[x.first].numUndergraduates << " CoA: $" << left << setw(9) << colleges[x.first].costAttendance << "Relevancy Pts: " << colleges[x.first].relevancyPts << endl;
 	}
-
-	/*for (int i = 0; i < relevancyQuick.size(); i++) {
-		if (colleges.find(relevancyQuick[i].first) != colleges.end())
-			result[i] = colleges[relevancyQuick[i].first];
-	}*/
-
-	/*for (int i = 0; i < result.size(); i++) {
-		cout << "School: " << result[i].institution << ", City/State: " << result[i].city << ", " << result[i].state << ", SAT: " << result[i].satAverage << ", Adm Rate: " << result[i].admissionRate << ", Undergrads: " << result[i].numUndergraduates << ", CoA: $" << result[i].costAttendance << endl;
-	}*/
-
 	return 0;
 }
